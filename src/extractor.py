@@ -46,11 +46,11 @@ def camera_make(data: dict):
 
 
 def camera_model(data: dict):
-    return data.get("Model")
+    return data.get("Model").strip("\x00")
 
 
 def extract_metadata(image_path):
-    path = Path(image_path)
+    path = Path(image_path).strip("\x00")
 
     try:
         img = Image.open(image_path)
@@ -92,12 +92,14 @@ def extract_all(folder_path):
     
     try:
         files = os.listdir(folder_path)
+        
         for file in files:
-            file_path = os.path.join(folder_path, file)
-            if os.path.isfile(file_path):
+            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                file_path = os.path.join(folder_path, file)
                 metadata = extract_metadata(file_path)
-                all_results.append(metadata)
-
+                if metadata:
+                    all_results.append(metadata)
+                    
         return all_results
     
     except FileNotFoundError:
@@ -107,4 +109,4 @@ def extract_all(folder_path):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    return None
+    return []
