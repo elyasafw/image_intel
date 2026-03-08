@@ -11,20 +11,42 @@ extractor.py - שליפת EXIF מתמונות
 
 """
 
+def dms_to_decimal(dms_tuple, ref):
+    degrees = float(dms_tuple[0])
+    minutes = float(dms_tuple[1])
+    seconds = float(dms_tuple[2])
+    decimal = degrees + minutes / 60 + seconds / 3600
+    if ref in [b'S', b'W', 'S', 'W']:
+        decimal = -decimal
+    return decimal
+
 
 def has_gps(data: dict):
-    pass
-
+    gps_info = data.get('GPSInfo')
+    if gps_info and 2 in gps_info and 4 in gps_info:
+        return True
+    return False
+            
 
 def latitude(data: dict):
-    pass
+    gps_info = data.get('GPSInfo')
+    if gps_info and 2 in gps_info and 1 in gps_info:
+        return dms_to_decimal(gps_info[2], gps_info[1])
+    return None
 
 
 def longitude(data: dict):
-    pass
+    gps_info = data.get('GPSInfo')
+    if gps_info and 4 in gps_info and 3 in gps_info:
+        return dms_to_decimal(gps_info[4], gps_info[3])
+    return None
+
 
 def datatime(data: dict):
-    pass
+    if data.get('DateTimeOriginal'):
+        return data['DateTimeOriginal']
+    return None
+
 
 
 def camera_make(data: dict):
