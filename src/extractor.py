@@ -42,7 +42,7 @@ def datatime(data: dict):
 
 
 def camera_make(data: dict):
-    return data.get("Make")
+    return data.get("Make").strip("\x00")
 
 
 def camera_model(data: dict):
@@ -50,7 +50,7 @@ def camera_model(data: dict):
 
 
 def extract_metadata(image_path):
-    path = Path(image_path).strip("\x00")
+    path = Path(image_path)
 
     try:
         img = Image.open(image_path)
