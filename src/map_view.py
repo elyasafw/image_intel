@@ -30,13 +30,27 @@ def create_map(images_data):
             all_latitude += dict["latitude"]
             all_longitude += dict["longitude"]
             data_counter += 1
+
     avg_latitude = all_latitude / data_counter
     avg_longitude = all_longitude / data_counter
     m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8)
+
+    colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen']
+    camera_colors = {}
+    color_index = 0
+
     for dict in images_data:
         if dict["has_gps"] == True:
-            folium.Marker([dict["latitude"], dict["longitude"]], popup=f'File_name: {dict["filename"]}<br>Date: {dict["datetime"]}<br>Camera_model: {dict["camera_model"]}').add_to(m)
-
+            model = dict["camera_model"]
+            if model not in camera_colors:
+                camera_colors[model] = colors[color_index % len(colors)]
+                color_index += 1               
+            current_color = camera_colors[model]
+            folium.Marker(
+                [dict["latitude"], dict["longitude"]], 
+                popup=f'File_name: {dict["filename"]}<br>Date: {dict["datetime"]}<br>Camera_model: {dict["camera_model"]}',
+                icon=folium.Icon(color=current_color)
+            ).add_to(m)
 
     return m._repr_html_()
 
