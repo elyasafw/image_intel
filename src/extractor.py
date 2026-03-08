@@ -11,20 +11,46 @@ extractor.py - שליפת EXIF מתמונות
 
 """
 
+def dms_to_decimal(dms_tuple, ref):
+    # בגרסאות חדשות של Pillow, האיברים בתוך dms_tuple הם אובייקטים
+    # שניתן להמיר ישירות ל-float
+    degrees = float(dms_tuple[0])
+    minutes = float(dms_tuple[1])
+    seconds = float(dms_tuple[2])
+    
+    decimal = degrees + minutes / 60 + seconds / 3600
+    
+    if ref in [b'S', b'W', 'S', 'W']:
+        decimal = -decimal
+    return decimal
+
+{'GPSInfo': {1: 'N', 2: (31.0, 15.0, 10.8), 3: 'E', 4: (34.0, 47.0, 29.4)}, 'ExifOffset': 114, 'Make': 'Samsung', 'Model': 'Galaxy S23', 'Software': 'ImageIntel Prep Tool', 'DateTimeOriginal': '2025:01:15 09:30:00', 'DateTimeDigitized': '2025:01:15 09:30:00', 'UserComment': b'UNICODE\x00\xd7\x05\xd6\x05\xe8\x05\xd4\x05 \x00\xdc\x05\xde\x05\xdb\x05\xe9\x05\xd9\x05\xe8\x05 \x00\xd4\x05\xde\x05\xe7\x05\xd5\x05\xe8\x05\xd9\x05'}
 
 def has_gps(data: dict):
-    pass
-
+    gps_info = data.get('GPSInfo')
+    if gps_info and 2 in gps_info and 4 in gps_info:
+        return True
+    return False
+            
 
 def latitude(data: dict):
-    pass
+    gps_info = data.get('GPSInfo')
+    if gps_info and 2 in gps_info and 1 in gps_info:
+        return dms_to_decimal(gps_info[2], gps_info[1])
+    return None
 
 
 def longitude(data: dict):
-    pass
+    gps_info = data.get('GPSInfo')
+    if gps_info and 4 in gps_info and 3 in gps_info:
+        return dms_to_decimal(gps_info[4], gps_info[3])
+    return None
+
 
 def datatime(data: dict):
-    pass
+    if data['DateTimeOriginal']:
+        return data['DateTimeOriginal']
+    return None
 
 
 def camera_make(data: dict):
@@ -96,3 +122,6 @@ def extract_all(folder_path):
         list של dicts (כמו extract_metadata)
     """
     pass
+
+
+print(extract_metadata(r'C:\Users\elyasaf\Desktop\my_projects\image_intel\images\uploads\IMG_009.jpg'))
