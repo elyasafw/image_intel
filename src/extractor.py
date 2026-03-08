@@ -28,11 +28,11 @@ def datatime(data: dict):
 
 
 def camera_make(data: dict):
-    return data.get("Make")
+    pass
 
 
 def camera_model(data: dict):
-    return data.get("Model")
+    pass
 
 
 def extract_metadata(image_path):
@@ -96,4 +96,3 @@ def extract_all(folder_path):
         list של dicts (כמו extract_metadata)
     """
     pass
-
