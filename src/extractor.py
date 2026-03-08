@@ -3,13 +3,6 @@ from PIL.ExifTags import TAGS
 from pathlib import Path
 import os
 
-"""
-extractor.py - שליפת EXIF מתמונות
-צוות 1, זוג A
-
-ראו docs/api_contract.md לפורמט המדויק של הפלט.
-
-"""
 
 def dms_to_decimal(dms_tuple, ref):
     degrees = float(dms_tuple[0])
@@ -49,27 +42,16 @@ def datatime(data: dict):
 
 
 def camera_make(data: dict):
-    pass
+    return data.get("Make")
 
 
 def camera_model(data: dict):
-    pass
+    return data.get("Model")
 
 
 def extract_metadata(image_path):
-    """
-    שולף EXIF מתמונה בודדת.
-
-    Args:
-        image_path: נתיב לקובץ תמונה
-
-    Returns:
-        dict עם: filename, datetime, latitude, longitude,
-              camera_make, camera_model, has_gps
-    """
     path = Path(image_path)
 
-    # תיקון: טיפול בתמונה בלי EXIF - בלי זה, exif.items() נופל עם AttributeError
     try:
         img = Image.open(image_path)
         exif = img._getexif()
@@ -92,8 +74,6 @@ def extract_metadata(image_path):
         tag = TAGS.get(tag_id, tag_id)
         data[tag] = value
 
-    # תיקון: הוסר print(data) שהיה כאן - הדפיס את כל ה-EXIF הגולמי על כל תמונה
-
     exif_dict = {
         "filename": path.name,
         "datetime": datatime(data),
@@ -103,18 +83,28 @@ def extract_metadata(image_path):
         "camera_model": camera_model(data),
         "has_gps": has_gps(data)
     }
+
     return exif_dict
 
 
 def extract_all(folder_path):
-    """
-    שולף EXIF מכל התמונות בתיקייה.
+    all_results = []
+    
+    try:
+        files = os.listdir(folder_path)
+        for file in files:
+            file_path = os.path.join(folder_path, file)
+            if os.path.isfile(file_path):
+                metadata = extract_metadata(file_path)
+                all_results.append(metadata)
 
-    Args:
-        folder_path: נתיב לתיקייה
+        return all_results
+    
+    except FileNotFoundError:
+        print(f"Folder not found: {folder_path}")
+    except PermissionError:
+        print(f"Permission denied: {folder_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-    Returns:
-        list של dicts (כמו extract_metadata)
-    """
-    pass
-
+    return None
