@@ -24,6 +24,7 @@ def longitude(data: dict):
     pass
 
 def datatime(data: dict):
+    pass
 
 
 def camera_make(data: dict):
@@ -95,3 +96,4 @@ def extract_all(folder_path):
         list של dicts (כמו extract_metadata)
     """
     pass
+
