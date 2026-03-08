@@ -43,7 +43,7 @@ def longitude(data: dict):
 
 
 def datatime(data: dict):
-    if data['DateTimeOriginal']:
+    if data.get('DateTimeOriginal'):
         return data['DateTimeOriginal']
     return None
 
@@ -117,3 +117,4 @@ def extract_all(folder_path):
         list של dicts (כמו extract_metadata)
     """
     pass
+
