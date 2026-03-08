@@ -21,16 +21,28 @@ def sort_by_time(arr):
 
 
 def create_map(images_data):
-    """
-    יוצר מפה אינטראקטיבית עם כל המיקומים.
+    
+    all_latitude = 0
+    all_longitude = 0
+    data_counter = 0
+    for dict in images_data:
+        if dict["has_gps"] == True:
+            all_latitude += dict["latitude"]
+            all_longitude += dict["longitude"]
+            data_counter += 1
+    avg_latitude = all_latitude / data_counter
+    avg_longitude = all_longitude / data_counter
+    m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8)
+    for dict in images_data:
+        if dict["has_gps"] == True:
+            folium.Marker([dict["latitude"], dict["longitude"]], popup=f'File_name: {dict["filename"]}<br>Date: {dict["datetime"]}<br>Camera_model: {dict["camera_model"]}').add_to(m)
 
-    Args:
-        images_data: רשימת מילונים מ-extract_all
 
-    Returns:
-        string של HTML (המפה)
-    """
-    pass
+    return m._repr_html_()
+
+    
+    
+    
 
 
 
