@@ -1,9 +1,7 @@
 import json
 from collections import Counter
 from geopy.geocoders import Nominatim
-
-
-
+import time
 def analyze(images_data: list[dict]) -> dict:
     amount_img = len(images_data)
     img_with_gps = 0
@@ -15,12 +13,16 @@ def analyze(images_data: list[dict]) -> dict:
     insights = []
     for img in images_data:
         if img["has_gps"] == True:
-            img_with_gps += 1
-            geolocator = Nominatim(user_agent="image_intel")
-            location = geolocator.reverse(f"{img['latitude']}, {img['longitude']}", language='en')
-            address_dict = location.raw.get("address", {})
-            city_name = address_dict.get("city", address_dict.get("town", "Unknown area"))
-            city_list.append(city_name)
+            try:
+                img_with_gps += 1
+                geolocator = Nominatim(user_agent="image_intel")
+                location = geolocator.reverse(f"{img['latitude']}, {img['longitude']}", language='en')
+                address_dict = location.raw.get("address", {})
+                city_name = address_dict.get("city", address_dict.get("town", "Unknown area"))
+                city_list.append(city_name)
+                time.sleep(1.1)
+            except Exception:
+                pass
         if img["camera_model"] not in unique_camera and img["camera_model"] != None:
             unique_camera.append(img["camera_model"])
         if img["datetime"] != None:
@@ -44,12 +46,18 @@ def analyze(images_data: list[dict]) -> dict:
     for city in city_counts:
         the_string = f"{city_counts[city]} photos were taken in {city}"
         insights.append(the_string)
+    if dates:
+        start_date = min(dates)
+        end_date = max(dates)
+    else:
+        start_date = "N/A"
+        end_date = "N/A"
     final_analyze = {
         "total_images":amount_img,
         "images_with_gps": img_with_gps,
         "images_with_datetime": img_with_datetime,
         "unique_cameras": unique_camera,
-        "date_range": {"start": min(dates), "end": max(dates)},
+        "date_range": {"start": start_date, "end": end_date},
         "insights": insights
         
     }

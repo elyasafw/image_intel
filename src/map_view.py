@@ -12,16 +12,17 @@ map_view.py - יצירת מפה אינטראקטיבית
 5. תיקון color_index - היה מתקדם על כל תמונה במקום רק על מכשיר חדש
 6. הוספת מקרא מכשירים
 """
-
+from pathlib import Path
 import folium
-
-
+from extractor import extract_all
+#path = Path(__file__).parent.parent / "images" / "ready"
 def sort_by_time(arr):
     pass
 
-
+#data_list = extract_all(path)
 def create_map(images_data):
-    
+    if not images_data:
+        return "<h2>No images found in the specified path</h2>"
     all_latitude = 0
     all_longitude = 0
     data_counter = 0
@@ -30,9 +31,12 @@ def create_map(images_data):
             all_latitude += item["latitude"]
             all_longitude += item["longitude"]
             data_counter += 1
-
-    avg_latitude = all_latitude / data_counter
-    avg_longitude = all_longitude / data_counter
+    if data_counter == 0:
+        return "<h2>No GPS data found in the images</h2>"
+    
+    if data_counter > 0:
+        avg_latitude = all_latitude / data_counter
+        avg_longitude = all_longitude / data_counter
     m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8)
 
     colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen']
@@ -61,16 +65,8 @@ def create_map(images_data):
 
 
 if __name__ == "__main__":
-    # תיקון: fake_data הועבר לכאן מגוף הקובץ - כדי שלא ירוץ בכל import
-    fake_data = [
-        {"filename": "test1.jpg", "latitude": 32.0853, "longitude": 34.7818,
-         "has_gps": True, "camera_make": "Samsung", "camera_model": "Galaxy S23",
-         "datetime": "2025-01-12 08:30:00"},
-        {"filename": "test2.jpg", "latitude": 31.7683, "longitude": 35.2137,
-         "has_gps": True, "camera_make": "Apple", "camera_model": "iPhone 15 Pro",
-         "datetime": "2025-01-13 09:00:00"},
-    ]
-    html = create_map(fake_data)
+
+    html = create_map(data_list)
     with open("test_map.html", "w", encoding="utf-8") as f:
         f.write(html)
     print("Map saved to test_map.html")
