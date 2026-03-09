@@ -25,5 +25,5 @@ def create_timeline(images_data):
         </div>'''
         
     html += '</div>'
-    return html,
+    return html
     
