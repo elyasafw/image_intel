@@ -8,6 +8,9 @@ def fake_create_timeline(images_data):
 
 
 def fake_create_report(images_data, map_html, timeline_html, analysis):
+    insights_html = ""
+    for insight in analysis.get('insights', []):
+        insights_html += f"<li>{insight}</li>"
     return f"""
     <html>
         <body style='font-family:sans-serif; direction:rtl;'>
@@ -17,7 +20,7 @@ def fake_create_report(images_data, map_html, timeline_html, analysis):
             {map_html}
             {timeline_html}
             <h3>תובנות:</h3>
-            <ul><li>{analysis['insights'][0]}</li></ul>
+            <ul><li>{insights_html}</li></ul>
         </body>
     </html>
     """

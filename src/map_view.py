@@ -21,7 +21,8 @@ def sort_by_time(arr):
 
 #data_list = extract_all(path)
 def create_map(images_data):
-    
+    if not images_data:
+        return "<h2>No images found in the specified path</h2>"
     all_latitude = 0
     all_longitude = 0
     data_counter = 0
@@ -30,9 +31,12 @@ def create_map(images_data):
             all_latitude += item["latitude"]
             all_longitude += item["longitude"]
             data_counter += 1
-
-    avg_latitude = all_latitude / data_counter
-    avg_longitude = all_longitude / data_counter
+    if data_counter == 0:
+        return "<h2>No GPS data found in the images</h2>"
+    
+    if data_counter > 0:
+        avg_latitude = all_latitude / data_counter
+        avg_longitude = all_longitude / data_counter
     m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8)
 
     colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen']
