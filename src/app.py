@@ -34,7 +34,7 @@ def analyze_images():
     folder_path = request.form.get('folder_path')
     
     if not folder_path or not os.path.isdir(folder_path):
-        return "תיקייה לא נמצאה", 400
+        return render_template('index.html', error="⚠️ שגיאה: התיקייה לא נמצאה במערכת")
     
     from extractor import extract_all
     images_data = extract_all(folder_path)

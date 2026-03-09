@@ -84,6 +84,11 @@
         <h1>{ IMAGE INTEL }</h1>
     </header>
     <main>
+        {% if error %}
+            <div class="error-alert">
+                {{ error }}
+            </div>
+        {% endif %}
         <h2>מערכת חילוץ מודיעין מתמונות</h2>
         <form action="/analyze" method="POST">
             <input type="text" name="folder_path" placeholder="הזן נתיב תיקייה לסריקה..." required>
