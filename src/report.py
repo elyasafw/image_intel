@@ -1,6 +1,8 @@
 from datetime import datetime
 
-def create_report(images_data, map_html, timeline_html, analysis):
+
+
+def create_report(map_html, timeline_html, analysis):
     now = datetime.now().strftime("%d/%m/%Y %H:%M")
     
     insights_html = ""
@@ -22,39 +24,38 @@ def create_report(images_data, map_html, timeline_html, analysis):
         body {{
             background-color: #f4f6f4;
             font-family: 'Courier New', monospace;
-            max-width: 850px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background: #f4f6f4;
             background-image:
                 linear-gradient(to right, #e0e7e0 1px, transparent 1px),
                 linear-gradient(to bottom, #e0e7e0 1px, transparent 1px);
-            background-size: 90px 90px;
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 2;
         
         }}
 
         .header {{
-            background: #353b16;
+            background: #4b5320;
             color: white;
-            padding: 30px;
-            border-radius: 10px;
+            padding: 3px;
             text-align: center;
         }}
 
         .summary {{
             text-align: center;
-            color: #353b16;
+            color: #4b5320;
         }}
 
         .section {{
             background: #ffffffb7;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            padding: 20px;
+            padding: 15px;
             margin: 20px 0;
-            border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: 1px solid #353b16;
+            border: 1px solid #4b5320;
         }}
 
         .stats {{
@@ -66,9 +67,8 @@ def create_report(images_data, map_html, timeline_html, analysis):
         }}
 
         .stat-card {{
-            background: #353b16;
-            padding: 15px 25px;
-            border-radius: 8px;
+            background: #4b5320;
+            padding: 10px 15px;
             text-align: center;
             flex: 1;
             min-width: 200px;
@@ -82,10 +82,9 @@ def create_report(images_data, map_html, timeline_html, analysis):
         }}
 
         .badge {{
-            background: #2E86AB;
+            background: #4b5320;
             color: white;
             padding: 5px 10px;
-            border-radius: 15px;
             margin: 3px;
             display: inline-block;
         }}

@@ -1,7 +1,9 @@
-import json
 from collections import Counter
 from geopy.geocoders import Nominatim
 import time
+
+
+
 def analyze(images_data: list[dict]) -> dict:
     amount_img = len(images_data)
     img_with_gps = 0
@@ -40,11 +42,11 @@ def analyze(images_data: list[dict]) -> dict:
                 change_camera_date[k] = v
             date_counter = v
     for key in change_camera_date:
-        the_string = f"בתאריך {key[5:10]} הסוכן החליף למצלמת {change_camera_date[key]}"
+        the_string = f"בתאריך {key[0:10]} הסוכן החליף למצלמת {change_camera_date[key]}"
         insights.append(the_string)
     city_counts = Counter(city_list)
     for city in city_counts:
-        the_string = f"{city_counts[city]} תמונות צולמו ב- {city}"
+        the_string = f"{city_counts[city]} תמונות צולמו ב - {city}"
         insights.append(the_string)
     if dates:
         start_date = min(dates)
