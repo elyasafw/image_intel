@@ -22,7 +22,7 @@ def create_report(images_data, map_html, timeline_html, analysis):
         body {{
             background-color: #f4f6f4;
             font-family: 'Courier New', monospace;
-            max-width: 1200px;
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
             background: #f4f6f4;
@@ -136,8 +136,7 @@ def create_report(images_data, map_html, timeline_html, analysis):
     </div>
 
     <div style="text-align:center; color:#888; margin-top:30px;">
-        Image Intel | האקתון 2025
-    </div>
+        <p>Image Intel 2026 © | Team: elyasaf, moshe, avi, yehuda, aviv</p>    </div>
 </body>
 
 </html>
