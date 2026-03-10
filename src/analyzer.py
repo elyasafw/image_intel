@@ -16,7 +16,7 @@ def analyze(images_data: list[dict]) -> dict:
             try:
                 img_with_gps += 1
                 geolocator = Nominatim(user_agent="image_intel")
-                location = geolocator.reverse(f"{img['latitude']}, {img['longitude']}", language='en')
+                location = geolocator.reverse(f"{img['latitude']}, {img['longitude']}", language='he')
                 address_dict = location.raw.get("address", {})
                 city_name = address_dict.get("city", address_dict.get("town", "Unknown area"))
                 city_list.append(city_name)
@@ -30,7 +30,7 @@ def analyze(images_data: list[dict]) -> dict:
             date_camera[img["datetime"]] = img["camera_model"]
             img_with_datetime += 1
     if unique_camera:
-        insights.append(f"{len(unique_camera)} different devices found")
+        insights.append(f"{len(unique_camera)} מכשירים שונים נמצאו")
     sorted_data_camera = {k:v for k,v in sorted(date_camera.items(), key=lambda x: x[0])}
     change_camera_date = {}
     date_counter = ''
@@ -40,11 +40,11 @@ def analyze(images_data: list[dict]) -> dict:
                 change_camera_date[k] = v
             date_counter = v
     for key in change_camera_date:
-        the_string = f"In {key[5:10]} the agent change camera to {change_camera_date[key]}"
+        the_string = f"בשעה {key[5:10]} הסוכן החליף למצלמת {change_camera_date[key]}"
         insights.append(the_string)
     city_counts = Counter(city_list)
     for city in city_counts:
-        the_string = f"{city_counts[city]} photos were taken in {city}"
+        the_string = f"{city_counts[city]} תמונות צולמו ב- {city}"
         insights.append(the_string)
     if dates:
         start_date = min(dates)
