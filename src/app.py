@@ -36,17 +36,16 @@ def index():
 def analyze_images():
     folder_path = request.form.get('folder_path')
     
-    if not folder_path or not os.path.isdir(folder_path):
-        return render_template('index.html', error="⚠️ שגיאה: התיקייה לא נמצאה במערכת")
-    
     from extractor import extract_all
     images_data = extract_all(folder_path)
+    if type(images_data) != list:
+        return render_template('index.html', error = images_data)
     
     from map_view import create_map
     map_html = create_map(images_data)
     
-    # from timeline import create_timeline
-    timeline_html = fake_create_timeline(images_data)
+    from timeline import create_timeline
+    timeline_html = create_timeline(images_data)
     
     from analyzer import analyze
     analysis = analyze(images_data)
