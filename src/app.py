@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 import os
-
+from report import create_report
 
 
 def fake_create_timeline(images_data):
@@ -52,7 +52,7 @@ def analyze_images():
     analysis = analyze(images_data)
     
     # from report import create_report
-    report_html = fake_create_report(images_data, map_html, timeline_html, analysis)
+    report_html = create_report(images_data, map_html, timeline_html, analysis)
     
     return report_html
 
