@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 
 
+
 def dms_to_decimal(dms_tuple, ref):
     degrees = float(dms_tuple[0])
     minutes = float(dms_tuple[1])
@@ -37,7 +38,7 @@ def longitude(data: dict):
 
 def datatime(data: dict):
     if data.get('DateTimeOriginal'):
-        return data['DateTimeOriginal']
+        return data['DateTimeOriginal'].replace(":", "-", 2)
     return None
 
 
@@ -103,10 +104,8 @@ def extract_all(folder_path):
         return all_results
     
     except FileNotFoundError:
-        print(f"Folder not found: {folder_path}")
+        return f"⚠️ לא נמצאה תיקייה:<br>{folder_path}"
     except PermissionError:
-        print(f"Permission denied: {folder_path}")
+        return f"⚠️ אין הרשאות גישה לתיקייה:<br>{folder_path}"
     except Exception as e:
-        print(f"An error occurred: {e}")
-
-    return []
+        return f"⚠️ אירעה שגיאה:<br>{e}"
