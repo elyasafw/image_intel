@@ -10,7 +10,8 @@
             background-image: 
                 linear-gradient(#e0e7e0 1px, transparent 1px),
                 linear-gradient(90deg, #e0e7e0 1px, transparent 1px);
-            background-size: 90px 90px;
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 2;
             margin: 0;
             padding: 50px 20px;
             color: #2b302b;
@@ -27,7 +28,7 @@
 
         main {
             background: #ffffff;
-            max-width: 800px;
+            max-width: 950px;
             margin: 0 auto;
             padding: 40px;
             border: 2px solid #4b5320;
@@ -39,7 +40,7 @@
             font-size: 1.2rem;
             border-bottom: 1px solid #d0d7d0;
             text-transform: uppercase;
-            padding: 10;
+            padding: 10px;
             padding-bottom: 15px;
             margin-bottom: 30px;
         }
@@ -57,11 +58,12 @@
 
         button {
             font-family: 'Courier New', monospace;
+            font-size: 15px;
             background-color: #4b5320;
             color: #ffffff;
-            padding: 12px 30px;
+            padding: 15px 30px;
             border: none;
-            font-weight: bold;
+            font-weight: bolder;
             cursor: pointer;
             text-transform: uppercase;
             transition: background 0.2s;
@@ -74,44 +76,41 @@
         footer {
             margin-top: 80px;
             font-size: 0.8rem;
-            color: #6b736b;
+            color: #000000;
             text-transform: uppercase;
         }
         
-    .error-msg {
-        font-family: 'Courier New', monospace;
-        font-size: 0.8rem;
-        font-weight: bold;
-        text-align: center;
-        color: #f72222;
-        text-transform: uppercase;
-        width: fit-content;
-        margin: 20px auto;
-        padding: 15px;
-        border: 1px solid #f72222;
-        background: #fdfdfd;
-    }
+        .error-msg {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #f72222;
+            text-align: center;
+            background-color: #fdfdfd;
+            border: 1px solid #f72222;
+            padding: 20px;
+            margin: 20px auto;
+            width: fit-content;
+        }
 
-    .close-btn {
-        font-family: 'Courier New', monospace;
-        font-size: 80%;
-        text-decoration: none;
-        text-transform: uppercase;
-        background-color: #4b5320;
-        color: #ffffff;
-        display: inline-block;
-        margin-top: 15px;
-        padding: 5px 15px;
-        border: none;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
+        .close-btn {
+            background-color: #4b5320;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 6px 20px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        
+        .close-btn:hover {
+            background-color: #353b16;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>{ IMAGE INTEL }</h1>
     </header>
+
     {% if error %}
         <p class="error-msg">
             {{ error|safe }}
@@ -119,14 +118,22 @@
             <a href="/" class="close-btn">אישור</a>
         </p>
     {% endif %}
+
     <main>
         <h2>מערכת חילוץ מודיעין מתמונות</h2>
         <form action="/analyze" method="POST">
             <input type="text" name="folder_path" placeholder="הזן נתיב תיקייה לסריקה..." required>
             <br>
-            <button type="submit">הפעל סריקה טקטית</button>
+            <button type="submit">הפעל סריקת תמונות</button>
         </form>
+
+        {% if timeline_html %}
+            <div id="results">
+                {{ timeline_html|safe }}
+            </div>
+        {% endif %}
     </main>
+
     <footer>
         <p>Image Intel 2026 © | Team: elyasaf, moshe, avi, yehuda, aviv</p>
     </footer>
