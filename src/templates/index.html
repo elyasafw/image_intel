@@ -27,7 +27,7 @@
 
         main {
             background: #ffffff;
-            max-width: 650px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px;
             border: 2px solid #4b5320;
@@ -77,18 +77,49 @@
             color: #6b736b;
             text-transform: uppercase;
         }
+        
+    .error-msg {
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-align: center;
+        color: #f72222;
+        text-transform: uppercase;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 15px;
+        border: 1px solid #f72222;
+        background: #fdfdfd;
+    }
+
+    .close-btn {
+        font-family: 'Courier New', monospace;
+        font-size: 80%;
+        text-decoration: none;
+        text-transform: uppercase;
+        background-color: #4b5320;
+        color: #ffffff;
+        display: inline-block;
+        margin-top: 15px;
+        padding: 5px 15px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
     </style>
 </head>
 <body>
     <header>
         <h1>{ IMAGE INTEL }</h1>
     </header>
+    {% if error %}
+        <p class="error-msg">
+            {{ error|safe }}
+            <br>
+            <a href="/" class="close-btn">אישור</a>
+        </p>
+    {% endif %}
     <main>
-        {% if error %}
-            <div class="error-alert">
-                {{ error }}
-            </div>
-        {% endif %}
         <h2>מערכת חילוץ מודיעין מתמונות</h2>
         <form action="/analyze" method="POST">
             <input type="text" name="folder_path" placeholder="הזן נתיב תיקייה לסריקה..." required>

@@ -37,7 +37,7 @@ def longitude(data: dict):
 
 def datatime(data: dict):
     if data.get('DateTimeOriginal'):
-        return data['DateTimeOriginal']
+        return data['DateTimeOriginal'].replace(":", "-", 2)
     return None
 
 
@@ -103,10 +103,9 @@ def extract_all(folder_path):
         return all_results
     
     except FileNotFoundError:
-        print(f"Folder not found: {folder_path}")
+        return f"⚠️ לא נמצאה תקייה:<br>{folder_path}"
     except PermissionError:
-        print(f"Permission denied: {folder_path}")
+        return f"⚠️ אין הרשאות גישה לתקייה:<br>{folder_path}"
     except Exception as e:
-        print(f"An error occurred: {e}")
-
-    return []
+        error = f"⚠️ אירעה שגיאה:<br>{e}"
+        return error
