@@ -55,6 +55,20 @@ def create_map(images_data):
                 popup=f'File_name: {item["filename"]}<br>Date: {item["datetime"]}<br>Camera_model: {item["camera_model"]}',
                 icon=folium.Icon(color=current_color)
             ).add_to(m)
+    
+    valid_points = [item for item in images_data if item.get("has_gps") == True and item.get("datetime") != None]
+    valid_points.sort(key=lambda x: x["datetime"])
+    
+    path_coords = [[item["latitude"], item["longitude"]] for item in valid_points]
+    
+    if len(path_coords) > 1:
+        folium.PolyLine(
+            path_coords,
+            color="blue",
+            weight=3,
+            opacity=0.6,
+            tooltip="מסלול כרונולוגי"
+        ).add_to(m)
 
     return m._repr_html_()
 
