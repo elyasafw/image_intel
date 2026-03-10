@@ -43,10 +43,14 @@ def datatime(data: dict):
 
 
 def camera_make(data: dict):
+    if data.get("Make") == None:
+        return data.get("Make")
     return data.get("Make").strip("\x00")
 
 
 def camera_model(data: dict):
+    if (data.get("Model")) == None:
+        return data.get("Model")
     return data.get("Model").strip("\x00")
 
 
