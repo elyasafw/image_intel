@@ -96,15 +96,15 @@ def extract_all(folder_path):
     all_results = []
     
     try:
-        files = os.listdir(folder_path)
-        
-        for file in files:
-            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                file_path = os.path.join(folder_path, file)
-                metadata = extract_metadata(file_path)
-                if metadata:
-                    all_results.append(metadata)
-                    
+        # os.walk עובר על התיקייה הראשית ועל כל תיקיות הבת שלה
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    file_path = os.path.join(root, file)
+                    metadata = extract_metadata(file_path)
+                    if metadata:
+                        all_results.append(metadata)
+                        
         return all_results
     
     except FileNotFoundError:

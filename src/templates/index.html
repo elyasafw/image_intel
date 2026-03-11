@@ -241,8 +241,14 @@
                 <div class="upload-zone" id="drop-zone">
                     <p id="file-status">גרור לכאן תמונות או לחץ לבחירה (JPG, PNG)</p>
                     <div id="preview-area" class="preview-container"></div>
-                    <input type="file" name="images" id="file-input" multiple accept=".jpg, .jpeg, .png" required>
+                    <input type="file" name="images" id="file-input" multiple accept=".jpg, .jpeg, .png">
                 </div>
+
+                <div style="background-color: #fdfdfd; border: 1px solid #4b5320; padding: 20px; margin: 0 auto 30px auto; width: 85%; text-align: right;">
+                    <p style="color: #4b5320; font-weight: bold; margin-top: 0;">או הזן נתיב מלא לתיקייה במחשב (סורק אוטומטית גם תיקיות בת):</p>
+                    <input type="text" name="local_folder" id="local-folder-input" placeholder="לדוגמה: C:\Users\Avi\Pictures\Targets" style="width: 95%; padding: 10px; font-family: 'Courier New', monospace; border: 1px solid #d0d7d0; box-sizing: border-box; background-color: #ffffff;">
+                </div>
+
                 <button type="submit">הפעל סריקה מודיעינית</button>
             </div>
 
@@ -259,17 +265,18 @@
     </footer>
 
     <script>
+        // ... כל הקוד הקיים של ה-JavaScript נשאר בדיוק אותו דבר ...
         const fileInput = document.getElementById('file-input');
         const fileStatus = document.getElementById('file-status');
         const previewArea = document.getElementById('preview-area');
         const intelForm = document.getElementById('intel-form');
         const uploadUI = document.getElementById('upload-ui');
         const loadingScreen = document.getElementById('loading-screen');
-        const dropZone = document.getElementById('drop-zone'); // זיהוי הריבוע המקווקו
+        const dropZone = document.getElementById('drop-zone');
+        const localFolderInput = document.getElementById('local-folder-input'); // תפסנו את השדה החדש
 
         let selectedFiles = [];
 
-        // 1. חסימת הדפדפן מלפתוח את התמונות בכרטיסיות חדשות בכל המסך
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
             document.body.addEventListener(eventName, preventDefaults, false);
@@ -280,7 +287,6 @@
             e.stopPropagation();
         }
 
-        // 2. אפקטים ויזואליים - צובע את הריבוע בירוק כשמרחפים מעליו עם קובץ
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => dropZone.style.backgroundColor = '#e0e7e0', false);
         });
@@ -289,39 +295,29 @@
             dropZone.addEventListener(eventName, () => dropZone.style.backgroundColor = '#fdfdfd', false);
         });
 
-        // 3. תפיסת הקבצים בגרירה אמיתית לתוך הריבוע
         dropZone.addEventListener('drop', function(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
             handleNewFiles(files);
         });
 
-        // תפיסת הקבצים בלחיצה רגילה על הריבוע ופתיחת חלון
         fileInput.addEventListener('change', function() {
             handleNewFiles(this.files);
         });
 
-        // פונקציה חכמה שמוסיפה את הקבצים החדשים ומונעת כפילויות
         function handleNewFiles(files) {
             if (files.length > 0) {
                 let addedNew = false;
-                
                 for (let i = 0; i < files.length; i++) {
                     const newFile = files[i];
-                    
-                    // בודק אם כבר יש קובץ עם אותו שם ואותו גודל בדיוק
                     const isDuplicate = selectedFiles.some(existingFile => 
                         existingFile.name === newFile.name && existingFile.size === newFile.size
                     );
-                    
-                    // מכניס את הקובץ רק אם הוא לא כפול
                     if (!isDuplicate) {
                         selectedFiles.push(newFile);
                         addedNew = true;
                     }
                 }
-                
-                // מעדכן את התצוגה ואת הטופס רק אם באמת נוספו קבצים חדשים
                 if (addedNew) {
                     updateFileInput();
                     renderPreviews();
@@ -329,35 +325,25 @@
             }
         }
 
-        // רינדור התמונות המוקטנות (נשאר אותו דבר)
         function renderPreviews() {
             previewArea.innerHTML = '';
-            
             if (selectedFiles.length === 0) {
                 fileStatus.textContent = 'גרור לכאן תמונות או לחץ לבחירה (JPG, PNG)';
                 fileInput.value = '';
                 return;
             }
-
             fileStatus.textContent = '📷 נבחרו ' + selectedFiles.length + ' קבצים:';
-
             const maxPreviews = Math.min(selectedFiles.length, 5);
-            
             for (let i = 0; i < maxPreviews; i++) {
                 const file = selectedFiles[i];
                 if (file.type.startsWith('image/')) {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'thumbnail-wrapper';
-
                     const img = document.createElement('img');
                     img.className = 'thumbnail';
-                    
                     const reader = new FileReader();
-                    reader.onload = function(e) {
-                        img.src = e.target.result;
-                    }
+                    reader.onload = function(e) { img.src = e.target.result; }
                     reader.readAsDataURL(file);
-
                     const deleteBtn = document.createElement('span');
                     deleteBtn.className = 'delete-btn';
                     deleteBtn.innerHTML = '&times;';
@@ -368,13 +354,11 @@
                         updateFileInput();
                         renderPreviews();
                     };
-
                     wrapper.appendChild(img);
                     wrapper.appendChild(deleteBtn);
                     previewArea.appendChild(wrapper);
                 }
             }
-            
             if (selectedFiles.length > 5) {
                 const extraDiv = document.createElement('div');
                 extraDiv.className = 'extra-files';
@@ -383,18 +367,22 @@
             }
         }
 
-        // עדכון זיכרון הטופס כדי שישלח את הנתונים לשרת
         function updateFileInput() {
             const dataTransfer = new DataTransfer();
             selectedFiles.forEach(file => dataTransfer.items.add(file));
             fileInput.files = dataTransfer.files;
         }
 
-        intelForm.addEventListener('submit', function() {
-            if (fileInput.files.length > 0) {
-                uploadUI.style.display = 'none';
-                loadingScreen.style.display = 'flex';
+        intelForm.addEventListener('submit', function(e) {
+            // בדיקה שבאמת הוכנס משהו (או תמונות או נתיב)
+            if (fileInput.files.length === 0 && localFolderInput.value.trim() === '') {
+                e.preventDefault();
+                alert('אנא גרור תמונות או הזן נתיב לתיקייה כדי להתחיל בסריקה.');
+                return;
             }
+            
+            uploadUI.style.display = 'none';
+            loadingScreen.style.display = 'flex';
         });
     </script>
 </body>

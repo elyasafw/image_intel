@@ -14,26 +14,45 @@ def index():
 @app.route('/analyze', methods=['POST'])
 def analyze_images():
     files = request.files.getlist('images')
+    local_folder = request.form.get('local_folder')
     
-    if not files or files[0].filename == '':
-        return render_template('index.html', error="לא נבחרו קבצים")
-
-    folder_path = app.config['UPLOAD_FOLDER']
-    
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if os.path.isfile(file_path):
-            os.remove(file_path)
-    
-    for file in files:
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(folder_path, filename))
-
     from extractor import extract_all
-    images_data = extract_all(folder_path)
-    if type(images_data) != list:
-        return render_template('index.html', error=images_data)
+    all_images_data = []
+
+    # 1. עיבוד הקבצים שנגררו לאתר
+    if files and files[0].filename != '':
+        folder_path = app.config['UPLOAD_FOLDER']
+        
+        # ניקוי התיקייה הזמנית
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        
+        # שמירת הקבצים החדשים
+        for file in files:
+            if file:
+                from werkzeug.utils import secure_filename
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(folder_path, filename))
+        
+        dragged_data = extract_all(folder_path)
+        if isinstance(dragged_data, list):
+            all_images_data.extend(dragged_data)
+
+    # 2. עיבוד הנתיב המקומי (כולל תיקיות בת)
+    if local_folder and local_folder.strip() != '':
+        folder_data = extract_all(local_folder.strip())
+        if isinstance(folder_data, list):
+            all_images_data.extend(folder_data)
+        elif not all_images_data: # שגיאה רק אם גם הגרירה ריקה
+            return render_template('index.html', error=folder_data)
+
+    # אם לא הוכנס כלום באף אחת מהאפשרויות
+    if not all_images_data:
+        return render_template('index.html', error="לא נמצאו תמונות לסריקה בשום מקור.")
+
+    images_data = all_images_data
     
     from map_view import create_map
     map_html = create_map(images_data)
