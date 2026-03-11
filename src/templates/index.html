@@ -45,15 +45,98 @@
             margin-bottom: 30px;
         }
 
-        input {
+        .upload-zone {
+            border: 2px dashed #4b5320;
+            background-color: #fdfdfd;
+            padding: 40px 20px;
+            margin: 0 auto 30px auto;
             width: 85%;
-            padding: 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            border: 1px solid #4b5320;
-            background: #fdfdfd;
-            margin-bottom: 20px;
-            outline: none;
+            position: relative;
+            transition: background 0.2s;
+            min-height: 120px;
+        }
+
+        .upload-zone:hover {
+            background-color: #e0e7e0;
+        }
+
+        .upload-zone input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0; 
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-zone p {
+            color: #4b5320;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 15;
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .thumbnail {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border: 2px solid #4b5320;
+            border-radius: 4px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #f72222;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            line-height: 22px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 20;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.15);
+            background-color: #d11a1a;
+        }
+
+        .extra-files {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background-color: #e0e7e0;
+            border: 2px dashed #4b5320;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #4b5320;
+            border-radius: 4px;
         }
 
         button {
@@ -71,6 +154,41 @@
 
         button:hover {
             background-color: #353b16;
+        }
+
+        #loading-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 6px solid #e0e7e0;
+            border-top: 6px solid #4b5320;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #4b5320;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            color: #666;
+            font-size: 0.9rem;
         }
 
         footer {
@@ -100,10 +218,6 @@
             display: inline-block;
             margin-top: 15px;
         }
-        
-        .close-btn:hover {
-            background-color: #353b16;
-        }
     </style>
 </head>
 <body>
@@ -121,21 +235,167 @@
 
     <main>
         <h2>מערכת חילוץ מודיעין מתמונות</h2>
-        <form action="/analyze" method="POST">
-            <input type="text" name="folder_path" placeholder="הזן נתיב תיקייה לסריקה..." required>
-            <br>
-            <button type="submit">הפעל סריקת תמונות</button>
-        </form>
-
-        {% if timeline_html %}
-            <div id="results">
-                {{ timeline_html|safe }}
+        
+        <form id="intel-form" action="/analyze" method="POST" enctype="multipart/form-data">
+            <div id="upload-ui">
+                <div class="upload-zone" id="drop-zone">
+                    <p id="file-status">גרור לכאן תמונות או לחץ לבחירה (JPG, PNG)</p>
+                    <div id="preview-area" class="preview-container"></div>
+                    <input type="file" name="images" id="file-input" multiple accept=".jpg, .jpeg, .png" required>
+                </div>
+                <button type="submit">הפעל סריקה מודיעינית</button>
             </div>
-        {% endif %}
+
+            <div id="loading-screen">
+                <div class="spinner"></div>
+                <div class="loading-text">מפעיל אלגוריתם חילוץ...</div>
+                <div class="loading-subtext">אנא המתן, המערכת מנתחת נתוני GPS, מזהה מכשירים ובונה מפה. זה עשוי לקחת מספר שניות.</div>
+            </div>
+        </form>
     </main>
 
     <footer>
         <p>Image Intel 2026 © | Team: elyasaf, moshe, avi, yehuda, aviv</p>
     </footer>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileStatus = document.getElementById('file-status');
+        const previewArea = document.getElementById('preview-area');
+        const intelForm = document.getElementById('intel-form');
+        const uploadUI = document.getElementById('upload-ui');
+        const loadingScreen = document.getElementById('loading-screen');
+        const dropZone = document.getElementById('drop-zone'); // זיהוי הריבוע המקווקו
+
+        let selectedFiles = [];
+
+        // 1. חסימת הדפדפן מלפתוח את התמונות בכרטיסיות חדשות בכל המסך
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // 2. אפקטים ויזואליים - צובע את הריבוע בירוק כשמרחפים מעליו עם קובץ
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.style.backgroundColor = '#e0e7e0', false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.style.backgroundColor = '#fdfdfd', false);
+        });
+
+        // 3. תפיסת הקבצים בגרירה אמיתית לתוך הריבוע
+        dropZone.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleNewFiles(files);
+        });
+
+        // תפיסת הקבצים בלחיצה רגילה על הריבוע ופתיחת חלון
+        fileInput.addEventListener('change', function() {
+            handleNewFiles(this.files);
+        });
+
+        // פונקציה חכמה שמוסיפה את הקבצים החדשים ומונעת כפילויות
+        function handleNewFiles(files) {
+            if (files.length > 0) {
+                let addedNew = false;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const newFile = files[i];
+                    
+                    // בודק אם כבר יש קובץ עם אותו שם ואותו גודל בדיוק
+                    const isDuplicate = selectedFiles.some(existingFile => 
+                        existingFile.name === newFile.name && existingFile.size === newFile.size
+                    );
+                    
+                    // מכניס את הקובץ רק אם הוא לא כפול
+                    if (!isDuplicate) {
+                        selectedFiles.push(newFile);
+                        addedNew = true;
+                    }
+                }
+                
+                // מעדכן את התצוגה ואת הטופס רק אם באמת נוספו קבצים חדשים
+                if (addedNew) {
+                    updateFileInput();
+                    renderPreviews();
+                }
+            }
+        }
+
+        // רינדור התמונות המוקטנות (נשאר אותו דבר)
+        function renderPreviews() {
+            previewArea.innerHTML = '';
+            
+            if (selectedFiles.length === 0) {
+                fileStatus.textContent = 'גרור לכאן תמונות או לחץ לבחירה (JPG, PNG)';
+                fileInput.value = '';
+                return;
+            }
+
+            fileStatus.textContent = '📷 נבחרו ' + selectedFiles.length + ' קבצים:';
+
+            const maxPreviews = Math.min(selectedFiles.length, 5);
+            
+            for (let i = 0; i < maxPreviews; i++) {
+                const file = selectedFiles[i];
+                if (file.type.startsWith('image/')) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'thumbnail-wrapper';
+
+                    const img = document.createElement('img');
+                    img.className = 'thumbnail';
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        selectedFiles.splice(i, 1);
+                        updateFileInput();
+                        renderPreviews();
+                    };
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(deleteBtn);
+                    previewArea.appendChild(wrapper);
+                }
+            }
+            
+            if (selectedFiles.length > 5) {
+                const extraDiv = document.createElement('div');
+                extraDiv.className = 'extra-files';
+                extraDiv.textContent = '+' + (selectedFiles.length - 5);
+                previewArea.appendChild(extraDiv);
+            }
+        }
+
+        // עדכון זיכרון הטופס כדי שישלח את הנתונים לשרת
+        function updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
+        intelForm.addEventListener('submit', function() {
+            if (fileInput.files.length > 0) {
+                uploadUI.style.display = 'none';
+                loadingScreen.style.display = 'flex';
+            }
+        });
+    </script>
 </body>
 </html>
