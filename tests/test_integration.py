@@ -1,5 +1,7 @@
 def test_full_pipeline():
-    """הבדיקה הכי חשובה - כל הצינור מקצה לקצה"""
+
+  
+  
     from extractor import extract_all
     from map_view import create_map
     from timeline import create_timeline

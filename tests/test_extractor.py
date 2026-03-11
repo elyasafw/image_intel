@@ -1,6 +1,8 @@
 import pytest
 import os
 
+
+
 def test_extract_metadata_returns_dict():
     from extractor import extract_metadata
     result = extract_metadata("images/sample_data/IMG_001.jpg")
