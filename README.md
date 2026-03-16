@@ -1,84 +1,67 @@
-# Image Intel - מערכת חילוץ מודיעין מתמונות
+# 🕵️‍♂️ Image Intel - חילוץ וניתוח מודיעין ויזואלי
 
-## מה זה?
+מערכת אוטומטית מבוססת **Python** לחילוץ מטא-דאטה (EXIF) מתמונות, ניתוח נתונים גאוגרפיים (GEOINT) והצגתם בדו"ח מודיעיני אינטראקטיבי. המערכת מאפשרת לאנליסטים לקבל תמונת מצב מהירה על ציר זמן ומפה מבוססת נ"צ מדויק.
 
-מערכת שמקבלת תמונות ומייצרת דו"ח מודיעיני: מיקומים על מפה, ציר זמן, זיהוי דפוסים וקשרים.
+---
 
-## יצירת Fork
-יצירה של עותק בgithub האישי של *ראש הצוות*. שאר אנשי הצוות יעבדו על העותק הזה.
-הגשת הפרויקט תעשה מהfork הזה.
-<img width="1418" height="240" alt="image" src="https://github.com/user-attachments/assets/7f192c20-bc8c-47a3-9bab-b4aa53f9a9e0" />
+## 🚀 תכונות מרכזיות (Key Features)
 
+| תכונה | פירוט טכני | רכיב מערכת |
+| :--- | :--- | :--- |
+| **חילוץ ממקורות מרובים** | תמיכה ב-**Drag & Drop** וסריקת נתיבים מקומיים בשרת | `app.py`, `extractor.py` |
+| **ציר זמן מודיעיני** | תצוגה כרונולוגית של אירועים על בסיס חותמות זמן מהמטא-דאטה | `timeline.py` |
+| **מפה אינטראקטיבית** | מיפוי נתוני GPS על גבי מפה דינמית וחילוץ מיקום גאוגרפי | `map_view.py` |
+| **ניתוח מטא-דאטה** | חילוץ דגמי מצלמות, הגדרות צילום (ISO, Exposure) וניתוח סטטיסטי | `extractor.py`, `analyzer.py` |
+| **דו"ח טקטי** | הפקת פלט HTML מעוצב הכולל תצוגה מותאמת להדפסה ל-PDF | `report.py` |
+| **עיצוב מינימליסטי** | ממשק משתמש (UI) טקטי, נקי וממוקד למשימות אנליזה | `index.html` |
 
-## התקנה
+---
 
-```bash
-git clone <repo-url>
-cd image_intel
-pip install -r requirements.txt
-```
+## 🛠 טכנולוגיות (Tech Stack)
 
-## הרצה
+| קטגוריה | טכנולוגיה | תפקיד במערכת |
+| :--- | :--- | :--- |
+| **Back-end** | Python 3.x, Flask | ניהול ה-Routes, ה-Config של השרת ולוגיקת ה-Upload |
+| **Data Extraction** | Pillow, EXIF library | מנוע חילוץ המטא-דאטה והטיפול בשגיאות קבצים |
+| **Visualization** | Folium, HTML5/CSS3 | מחולל המפות האינטראקטיביות והממשק המעוצב |
+| **Testing** | Pytest | מערך בדיקות תוכנה מקיף (Unit & Integration) |
 
-```bash
-python src/app.py
-```
+---
 
-גשו ל-`http://localhost:5000` בדפדפן.
+## 📦 התקנה והרצה (Installation & Setup)
 
-## מבנה הפרויקט
+1.  **שכפול הפרויקט:**
+    ```bash
+    git clone [https://github.com/your-username/image-intel.git](https://github.com/your-username/image-intel.git)
+    cd image-intel
+    ```
 
-```
-image_intel/
-├── README.md
-├── requirements.txt
-├── docs/                          # מסמכים ומדריכים
-│   ├── briefing.md                # תדריך כללי
-│   ├── team1_data_guide.md        # מדריך רביעייה 1
-│   ├── team2_visual_guide.md      # מדריך רביעייה 2
-│   ├── team3_app_guide.md         # מדריך רביעייה 3
-│   ├── qa_guide.md                # מדריך צוות QA
-│   ├── schedule.md                # לוח זמנים
-│   └── api_contract.md            # הגדרת ממשקים בין המודולים
-├── images/
-│   └── sample_data/               # תמונות לבדיקה (יתווספו)
-├── src/
-│   ├── app.py                     # Flask app - צוות 3 זוג A
-│   ├── extractor.py               # שליפת EXIF - צוות 1 זוג A
-│   ├── map_view.py                # מפה - צוות 1 זוג B
-│   ├── timeline.py                # ציר זמן - צוות 2 זוג A
-│   ├── analyzer.py                # ניתוח דפוסים - צוות 2 זוג B
-│   ├── report.py                  # הרכבת דו"ח - צוות 3 זוג B
-│   ├── templates/
-│   │   └── index.html             # דף הבית
-│   └── static/                    # קבצים סטטיים
-├── tests/
-│   ├── test_extractor.py          # צוות QA
-│   ├── test_map_view.py
-│   ├── test_timeline.py
-│   ├── test_analyzer.py
-│   └── test_integration.py
-└── tools/
-    └── inject_exif.py             # כלי להכנת תמונות (למדריך בלבד)
-```
+2.  **התקנת ספריות נדרשות:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-## צוותים
+3.  **הרצת האפליקציה:**
+    ```bash
+    python app.py
+    ```
+    האפליקציה תהיה זמינה בכתובת: `http://127.0.0.1:5000`
 
-| רביעייה | זוג A | זוג B |
-|---------|-------|-------|
-| 1 - Data | extractor.py | map_view.py |
-| 2 - Visual | timeline.py | analyzer.py |
-| 3 - App | app.py (Flask) | report.py (HTML) |
-| QA | בדיקות + Code Review (2 תלמידים) |
+---
 
-## עבודה עם Git
+## 📂 מבנה הפרויקט
 
-כל זוג עובד על branch נפרד:
-```bash
-git checkout -b feature/extractor
-# עבודה...
-git add .
-git commit -m "Add GPS extraction"
-git push origin feature/extractor
-# פתחו PR ב-GitHub
-```
+* `app.py`: ניהול ה-Routes, הגדרות ה-Flask וניהול תיקיית ה-Uploads.
+* `extractor.py`: מנוע הליבה לחילוץ נתוני ה-EXIF מהתמונות.
+* `map_view.py`: יצירת המפה האינטראקטיבית מבוססת הקואורדינטות.
+* `timeline.py`: בניית ציר הזמן הכרונולוגי של הנתונים שנאספו.
+* `report.py`: מחולל הדו"חות המעוצבים עם תמיכה ב-Print Media.
+* `tests/`: תיקיית בדיקות המבטיחה את תקינות הפייפליין מקצה לקצה.
+
+---
+
+## 📝 Roadmap (תוכניות לעתיד)
+
+- [ ] שילוב **OpenCV** לזיהוי אובייקטים (רכבים, אנשים) ושיפור איכות תמונה.
+- [ ] הטמעת מנוע **OCR** לחילוץ טקסט משלטים ומסמכים מצולמים.
+- [ ] פיתוח אפשרות לייצוא ישיר ל-PDF ללא תלות בדפדפן.
