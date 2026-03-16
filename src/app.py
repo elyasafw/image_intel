@@ -23,7 +23,11 @@ def analyze_images():
 
     if files and files[0].filename != '':
         upload_dir = app.config['UPLOAD_FOLDER']
-        for f in os.listdir(upload_dir): os.remove(os.path.join(upload_dir, f))
+        os.makedirs(upload_dir, exist_ok=True)
+        for f in os.listdir(upload_dir):
+            file_path = os.path.join(upload_dir, f)
+            if os.path.isfile(file_path): os.remove(file_path)
+            
         for file in files:
             if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
                 from werkzeug.utils import secure_filename
