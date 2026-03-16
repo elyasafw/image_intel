@@ -33,16 +33,18 @@ def stage_files():
                 existing_files.append(filename)
                 
     folder_path = request.form.get('folder_path')
-    if folder_path and folder_path.strip() and os.path.isdir(folder_path.strip()):
-        for root, dirs, filenames in os.walk(folder_path.strip()):
-            for f in filenames:
-                if f.lower().endswith(('.jpg', '.jpeg', '.png')):
-                    safe_name = secure_filename(f)
-                    if safe_name not in existing_files:
-                        source_path = os.path.join(root, f)
-                        dest_path = os.path.join(upload_dir, safe_name)
-                        shutil.copy2(source_path, dest_path)
-                        existing_files.append(safe_name)
+    if folder_path:
+        clean_path = folder_path.strip().strip('"').strip("'")
+        if os.path.isdir(clean_path):
+            for root, dirs, filenames in os.walk(clean_path):
+                for f in filenames:
+                    if f.lower().endswith(('.jpg', '.jpeg', '.png')):
+                        safe_name = secure_filename(f)
+                        if safe_name not in existing_files:
+                            source_path = os.path.join(root, f)
+                            dest_path = os.path.join(upload_dir, safe_name)
+                            shutil.copy2(source_path, dest_path)
+                            existing_files.append(safe_name)
                         
     current_files = os.listdir(upload_dir)
     return render_template('staging.html', files=current_files)
@@ -87,6 +89,11 @@ def do_analyze():
     from report import create_report
     report_html = create_report(map_html, timeline_html, analysis, scan_warnings)
     
+    for f in os.listdir(upload_dir):
+        file_path = os.path.join(upload_dir, f)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
     return report_html
 
 if __name__ == '__main__':

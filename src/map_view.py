@@ -19,7 +19,7 @@ def create_map(images_data):
     if data_counter > 0:
         avg_latitude = all_latitude / data_counter
         avg_longitude = all_longitude / data_counter
-    m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8)
+    m = folium.Map(location=[avg_latitude, avg_longitude], zoom_start=8, tiles='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',attr='Google Maps')
 
     colors = ['red', 'blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen']
     camera_colors = {}
