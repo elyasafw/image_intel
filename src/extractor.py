@@ -92,24 +92,34 @@ def extract_metadata(image_path):
     return exif_dict
 
 
-def extract_all(folder_path):
+def extract_all(folder_path, warnings = None):
+    if not os.path.isdir(folder_path):
+        return f"⚠️ לא נמצאה תיקייה בנתיב:<br>{folder_path}"
+
     all_results = []
-    
+    found_access_issue = False
+
+    def on_walk_error(err):
+        nonlocal found_access_issue
+        found_access_issue = True
+        if warnings is not None:
+            warnings.append(f"אין גישה לתיקיית בת: {err.filename}")
+
     try:
-        files = os.listdir(folder_path)
+        for root, dirs, files in os.walk(folder_path, onerror = on_walk_error):
+            for file in files:
+                if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    file_path = os.path.join(root, file)
+                    metadata = extract_metadata(file_path)
+                    if metadata:
+                        all_results.append(metadata)
         
-        for file in files:
-            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                file_path = os.path.join(folder_path, file)
-                metadata = extract_metadata(file_path)
-                if metadata:
-                    all_results.append(metadata)
-                    
+        if not all_results:
+            if found_access_issue:
+                return f"⚠️ אין הרשאות גישה לתוכן התיקייה:<br>{folder_path}"
+            return f"⚠️ לא נמצאו תמונות בנתיב:<br>{folder_path}"
+            
         return all_results
     
-    except FileNotFoundError:
-        return f"⚠️ לא נמצאה תיקייה:<br>{folder_path}"
-    except PermissionError:
-        return f"⚠️ אין הרשאות גישה לתיקייה:<br>{folder_path}"
     except Exception as e:
-        return f"⚠️ אירעה שגיאה:<br>{e}"
+        return f"⚠️ אירעה שגיאה: {e}"

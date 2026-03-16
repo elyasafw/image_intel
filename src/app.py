@@ -9,12 +9,14 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/analyze', methods=['POST'])
+@app.route('/analyze', methods = ['POST'])
 def analyze_images():
     folder_path = request.form.get('folder_path')
+    scan_warnings = []
     
     from extractor import extract_all
-    images_data = extract_all(folder_path)
+
+    images_data = extract_all(folder_path, warnings = scan_warnings)
     if type(images_data) != list:
         return render_template('index.html', error = images_data)
     
@@ -28,7 +30,7 @@ def analyze_images():
     analysis = analyze(images_data)
     
     from report import create_report
-    report_html = create_report(map_html, timeline_html, analysis)
+    report_html = create_report(map_html, timeline_html, analysis, scan_warnings)
     
     return report_html
 
