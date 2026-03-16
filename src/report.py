@@ -7,7 +7,7 @@ def create_report(map_html, timeline_html, analysis, warnings = None):
 
     warnings_html = ""
     if warnings:
-        warnings_html = '<div class="section" style="background: #faf8c0; padding: 10px; margin: 20px 0; color: #fc0808; border: 1px solid #ffeeba;">'
+        warnings_html = '<div class="section" style="background: #faf8c0; padding: 8px; margin: 15px 0; color: #ce0303; border: 1px solid #ffeeba;">'
         warnings_html += '<h2 class="summary">⚠️ אזהרות במהלך הסריקה</h2><ul>'
         for w in warnings:
             warnings_html += f"<li>{w}</li>"
