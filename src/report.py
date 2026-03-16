@@ -2,8 +2,16 @@ from datetime import datetime
 
 
 
-def create_report(map_html, timeline_html, analysis):
+def create_report(map_html, timeline_html, analysis, warnings = None):
     now = datetime.now().strftime("%d/%m/%Y %H:%M")
+
+    warnings_html = ""
+    if warnings:
+        warnings_html = '<div class="section" style="background: #faf8c0; padding: 10px; margin: 20px 0; color: #fc0808; border: 1px solid #ffeeba;">'
+        warnings_html += '<h2 class="summary">⚠️ אזהרות במהלך הסריקה</h2><ul>'
+        for w in warnings:
+            warnings_html += f"<li>{w}</li>"
+        warnings_html += "</ul></div>"
     
     insights_html = ""
     for insight in analysis.get("insights", []):
@@ -96,7 +104,7 @@ def create_report(map_html, timeline_html, analysis):
         <h1>Image Intel Report</h1>
         <p>נוצר ב-{now}</p>
     </div>
-
+    {warnings_html}
     <div class="section">
         <h2 class="summary">סיכום</h2>
         <div class="stats">
