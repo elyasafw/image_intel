@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>אישור נתונים לפני סריקה</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background-color: #f4f7f4; color: #2b302b; text-align: center; }
+        .file-list { max-width: 500px; margin: 0 auto; text-align: right; background: white; padding: 20px; border: 2px solid #4b5320; }
+        .file-item { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 10px 0; }
+        button { background: #4b5320; color: white; padding: 5px 15px; cursor: pointer; border: none; }
+        .btn-delete { background: #f72222; }
+        .btn-start { background: #4b5320; font-size: 1.2rem; padding: 15px 30px; margin-top: 20px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>תמונות שנקלטו בשרת ({files|length})</h1>
+    
+    <div class="file-list">
+        {% for file in files %}
+        <div class="file-item">
+            <span>📷 {{ file }}</span>
+            <form action="/delete_file/{{ file }}" method="POST" style="margin:0;">
+                <button type="submit" class="btn-delete">הסר</button>
+            </form>
+        </div>
+        {% endfor %}
+        
+        <form action="/stage_files" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+            <input type="file" name="images" multiple accept=".jpg, .jpeg, .png">
+            <button type="submit">הוסף עוד תמונות</button>
+        </form>
+
+        <form action="/loading" method="POST">
+            <button type="submit" class="btn-start">הפעל סריקה מודיעינית</button>
+        </form>
+    </div>
+</body>
+</html>
