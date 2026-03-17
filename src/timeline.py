@@ -18,7 +18,7 @@ def create_timeline(images_data):
         timeline_tree[date_part][h].append(img_info)
 
     dates = sorted(timeline_tree.keys())
-    graph_height = max(200, len(dates) * 35)
+    graph_height = max(165, len(dates) * 25)
 
     html = f'''
     <style>
@@ -26,10 +26,10 @@ def create_timeline(images_data):
             position: relative;
             width: 85%;
             height: {graph_height}px;
-            margin: 40px auto;
+            margin: 30px auto;
             text-align: right;
             background: white;
-            padding: 20px 80px 40px 20px;
+            padding: 20px 60px 30px 15px;
             font-family: 'Courier New', monospace;
         }}
         .graph-area {{
@@ -55,7 +55,7 @@ def create_timeline(images_data):
         }}
         .grid-line {{
             position: absolute;
-            background: #f0f3f0;
+            background: #e6ede6;
         }}
         .grid-line-major {{
             position: absolute;
@@ -69,11 +69,11 @@ def create_timeline(images_data):
             position: absolute;
             cursor: help;
             transition: transform 0.2s;
-            transform: translate(50%, 50%);
+            transform: translate(-50%, 50%);
             z-index: 10;
         }}
         .dot:hover {{
-            transform: translate(50%, 50%) scale(1.6);
+            transform: translate(-50%, 50%) scale(1.6);
             background: #4b5320;
             z-index: 100;
         }}
@@ -93,7 +93,7 @@ def create_timeline(images_data):
             left: 50%;
             margin-left: -85px;
             opacity: 1 !important;
-            font-size: 0.65rem;
+            font-size: 0.60rem;
             line-height: 1.3;
             pointer-events: none;
             border: 1px solid #4b5320;
@@ -119,10 +119,10 @@ def create_timeline(images_data):
         line_width = "1.5px" if is_major else "0.5px"
         
         html += f'''
-        <div class="{line_class}" style="right: {x_pos}%; top: 0; bottom: 0; width: {line_width};"></div>'''
+        <div class="{line_class}" style="left: {x_pos}%; top: 0; bottom: 0; width: {line_width};"></div>'''
         
         if is_major:
-            html += f'<div class="x-label" style="right: {x_pos}%; transform: translateX(50%);">{hr:02d}:00</div>'
+            html += f'<div class="x-label" style="left: {x_pos}%; transform: translateX(-50%);">{hr:02d}:00</div>'
 
     for i, date in enumerate(dates):
         y_pos = (i / (len(dates) - 1 if len(dates) > 1 else 1)) * 100
@@ -140,7 +140,7 @@ def create_timeline(images_data):
                         <div class="truncate"><b>זמן:</b> {img['datetime']}</div>
                         '''                
                 html += f'''
-                <div class="dot" style="right: {x_pos}%; bottom: {y_pos}%;">
+                <div class="dot" style="left: {x_pos}%; bottom: {y_pos}%;">
                     <span class="tooltip">{info}</span>
                 </div>'''
             

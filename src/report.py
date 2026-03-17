@@ -41,7 +41,16 @@ def create_report(map_html, timeline_html, analysis, warnings = None):
                 linear-gradient(to bottom, #e0e7e0 1px, transparent 1px);
             background-size: 40px 40px;
             background-position: 0 0, 20px 2;
-        
+            caret-color: transparent;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }}
+
+        .dot .tooltip, b, li, p, .stat-number, .badge {{
+            user-select: text;
+            -webkit-user-select: text;
+            -ms-user-select: text; 
         }}
 
         .header {{
@@ -96,6 +105,16 @@ def create_report(map_html, timeline_html, analysis, warnings = None):
             margin: 3px;
             display: inline-block;
         }}
+
+        summary::-webkit-details-marker {{
+        display: none;
+        }}
+
+        summary {{
+        list-style: none;
+        outline: none;
+        cursor: pointer;
+        }}
     </style>
 </head>
 
@@ -133,8 +152,14 @@ def create_report(map_html, timeline_html, analysis, warnings = None):
     </div>
 
     <div class="section">
-        <h2 class="summary">ציר זמן</h2>
-        {timeline_html}
+        <details>
+            <summary>
+                <h2 class="summary" style="margin: 0;">ציר זמן</h2>
+            </summary>
+            <div style="margin-top: 20px;">
+                {timeline_html}
+            </div>
+        </details>
     </div>
 
     <div class="section">
@@ -142,7 +167,7 @@ def create_report(map_html, timeline_html, analysis, warnings = None):
         {cameras_html}
     </div>
 
-    <div style="text-align:center; color:#888; margin-top:30px;">
+    <div style="text-align: center; color: #000000; text-transform: uppercase; margin-top: 30px;">
         <p>Image Intel 2026 © | Team: elyasaf, moshe, avi, yehuda, aviv</p>    </div>
 </body>
 
