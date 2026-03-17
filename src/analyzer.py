@@ -13,11 +13,11 @@ def analyze(images_data: list[dict]) -> dict:
     date_camera = {}
     city_list = []
     insights = []
+    geolocator = Nominatim(user_agent="image_intel")
     for img in images_data:
         if img["has_gps"] == True:
             try:
                 img_with_gps += 1
-                geolocator = Nominatim(user_agent="image_intel")
                 location = geolocator.reverse(f"{img['latitude']}, {img['longitude']}", language='he')
                 address_dict = location.raw.get("address", {})
                 city_name = address_dict.get("city", address_dict.get("town", "Unknown area"))

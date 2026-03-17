@@ -1,4 +1,10 @@
+from extractor import extract_all
+from map_view import create_map
+from timeline import create_timeline
+from analyzer import analyze
+from report import create_report
 from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
 import os
 
 
@@ -19,8 +25,6 @@ def analyze_images():
     scan_warnings = []
     images_data = []
     
-    from extractor import extract_all
-
     if files and files[0].filename != '':
         upload_dir = app.config['UPLOAD_FOLDER']
         os.makedirs(upload_dir, exist_ok=True)
@@ -30,7 +34,6 @@ def analyze_images():
             
         for file in files:
             if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
-                from werkzeug.utils import secure_filename
                 file.save(os.path.join(upload_dir, secure_filename(file.filename)))
         
         res = extract_all(upload_dir, warnings = scan_warnings)
@@ -46,16 +49,9 @@ def analyze_images():
     if not images_data:
         return render_template('index.html', error = "⚠️ לא נמצאו תמונות לסריקה")
     
-    from map_view import create_map
     map_html = create_map(images_data)
-    
-    from timeline import create_timeline
     timeline_html = create_timeline(images_data)
-    
-    from analyzer import analyze
     analysis = analyze(images_data)
-    
-    from report import create_report
     report_html = create_report(map_html, timeline_html, analysis, scan_warnings)
     
     return report_html

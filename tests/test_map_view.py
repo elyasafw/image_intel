@@ -1,3 +1,7 @@
+from map_view import create_map
+
+
+
 def get_fake_data():
     return [
         {"filename": "t1.jpg", "latitude": 32.0, "longitude": 34.7, 
@@ -9,19 +13,18 @@ def get_fake_data():
     ]
 
 def test_create_map_returns_html():
-    from map_view import create_map
     result = create_map(get_fake_data())
     assert isinstance(result, str)
     assert len(result) > 0
 
+
 def test_create_map_handles_no_gps():
-    from map_view import create_map
     no_gps = [{"filename": "x.jpg", "has_gps": False, "latitude": None, 
                "longitude": None, "camera_model": None, "datetime": None}]
     result = create_map(no_gps)
     assert isinstance(result, str)
 
+
 def test_create_map_handles_empty_list():
-    from map_view import create_map
     result = create_map([])
     assert isinstance(result, str)
