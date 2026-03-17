@@ -32,7 +32,7 @@
 
 1.  **שכפול הפרויקט:**
     ```bash
-    git clone [https://github.com/your-username/image-intel.git](https://github.com/your-username/image-intel.git)
+    git clone [https://github.com/<your-username>/image-intel.git]
     cd image-intel
     ```
 
